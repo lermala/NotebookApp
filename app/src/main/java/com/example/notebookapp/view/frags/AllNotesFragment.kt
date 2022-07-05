@@ -22,16 +22,6 @@ class AllNotesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        contract().listenResult(Note::class.java, viewLifecycleOwner){
-            if (it != null) { // после работы NoteFragment
-                val msg = "Заметка ${it.title} успешно добавлена"
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                notes.add(it)
-            } else {
-                // nothing
-            }
-        }
-
         binding = FragmentAllNotesBinding.inflate(inflater, container, false)
 
         notes = contract().notesService.notes

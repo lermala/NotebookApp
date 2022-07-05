@@ -84,7 +84,7 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
         note.title = binding.noteTitle.text.toString()
         note.content = binding.noteContent.text.toString()
 
-        contract().publishResult(note)
+        contract().addNote(note)
         contract().goBack()
     }
 
