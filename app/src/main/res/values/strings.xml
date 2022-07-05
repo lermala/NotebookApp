@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">NotebookApp</string>
+    <string name="Pantone">pantone®</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="notes">Заметки</string>
+    <string name="title">Title</string>
+    <string name="content">Content</string>
+    <string name="newNote">Новая заметка</string>
+    <string name="note">Заметка</string>
+    <string name="save">Сохранить</string>
+</resources>
