@@ -5,19 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.example.notebook.model.Note
-import com.example.notebookapp.R
 import com.example.notebookapp.databinding.ItemNotePantoneBinding
 import com.example.notebookapp.model.PantoneColor
+import com.example.notebookapp.model.note_style.NoteStylePantone
+import com.example.notebookapp.model.note_style.NoteStyleSimple
 
 typealias OnClickItemListener = (Note) -> Unit
 
 class NoteAdapter(private val notes: MutableList<Note>): BaseAdapter(), View.OnClickListener {
-
-    private var colorId = 0
-    private var pantones = PantoneColor.getDefaultPantones()
 
     override fun getCount(): Int {
         return notes.size
@@ -32,31 +28,46 @@ class NoteAdapter(private val notes: MutableList<Note>): BaseAdapter(), View.OnC
     }
 
     override fun getView(pos: Int, convertView: View?, parent: ViewGroup?): View {
+        val currentNote = notes[pos]
+
+        var view: View = getPantoneView(pos, convertView, parent) // change by default
+        when(currentNote.style){
+            is NoteStylePantone -> view = getPantoneView(pos, convertView, parent)
+            is NoteStyleSimple ->  view = getSimpleView(pos, convertView, parent)
+        }
+
+        return view
+    }
+
+    private fun getPantoneView(pos: Int, convertView: View?, parent: ViewGroup?): View  {
         val binding : ItemNotePantoneBinding =
             convertView?.tag as ItemNotePantoneBinding? ?: // if doesn't exist
-            createBinding(parent!!.context) // else create new
+            createPantoneBinding(parent!!.context) // else create new
 
         // updates UI
         binding.noteNameTextView.text = notes[pos].title
         // change color
-        binding.imageView.setBackgroundColor(pantones[colorId].parseColor())
-        binding.codeColorTextView.text = pantones[colorId].codePantoneColor
-        binding.codeNameTextView.text = pantones[colorId].nameColor
-        changeColorId()
+        val pantone = (notes[pos].style as NoteStylePantone).pantoneColor
+
+        binding.imageView.setBackgroundColor(pantone.parseColor())
+        binding.codeColorTextView.text = pantone.codePantoneColor
+        binding.codeNameTextView.text = pantone.nameColor
 
         return binding.root
     }
 
-    private fun changeColorId(){
-        if (colorId == pantones.size - 1){
-            colorId = 0
-        }
-        else {
-            colorId++
-        }
+    private fun getSimpleView(pos: Int, convertView: View?, parent: ViewGroup?): View  {
+        val binding : ItemNotePantoneBinding =
+            convertView?.tag as ItemNotePantoneBinding? ?: // if doesn't exist
+            createPantoneBinding(parent!!.context) // else create new
+
+        // updates UI
+        // todo
+
+        return binding.root
     }
 
-    private fun createBinding(context: Context) : ItemNotePantoneBinding {
+    private fun createPantoneBinding(context: Context) : ItemNotePantoneBinding {
         val binding = ItemNotePantoneBinding.inflate(LayoutInflater.from(context))
         // binding.btDel.setOnClickListener(this)
 
@@ -64,6 +75,8 @@ class NoteAdapter(private val notes: MutableList<Note>): BaseAdapter(), View.OnC
         return binding
     }
 
+    // использовать, если в каждом view будет кнопка, которую нужно обработать.
+    // Сейчас она не нужна.
     override fun onClick(v: View?) {
         // val note = v.tag as Note
         // OnClickItemListener.invoke()
