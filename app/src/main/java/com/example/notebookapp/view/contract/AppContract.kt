@@ -20,7 +20,9 @@ interface AppContract {
 
     fun showAllNotes()
 
-    fun showCreatingNote(note: Note)
+    fun showEditingNote(noteId: Int)
+
+    fun showCreatingNote()
 
     fun goToStartFragment()
 

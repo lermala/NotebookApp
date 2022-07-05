@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.LifecycleOwner
-import com.example.notebook.model.Note
 import com.example.notebookapp.databinding.ActivityMainBinding
 import com.example.notebookapp.model.NotesService
 import com.example.notebookapp.view.contract.*
@@ -108,8 +107,12 @@ class MainActivity : AppCompatActivity(), AppContract {
         launchFragment(AllNotesFragment())
     }
 
-    override fun showCreatingNote(note: Note) {
-        launchFragment(NoteFragment.newInstance(note))
+    override fun showEditingNote(noteId: Int) {
+        launchFragment(NoteFragment.newInstance(noteId))
+    }
+
+    override fun showCreatingNote() {
+        launchFragment(NoteFragment())
     }
 
     // кастомизация верхнего меню
@@ -163,7 +166,6 @@ class MainActivity : AppCompatActivity(), AppContract {
     }
 
     companion object{
-        private const val KEY_NOTE = "KEY_NOTE"
         private const val KEY_RESULT = "KEY_RESULT"
     }
 }

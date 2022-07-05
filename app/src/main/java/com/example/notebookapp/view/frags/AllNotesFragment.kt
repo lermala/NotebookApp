@@ -5,13 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.Toast
 import com.example.notebook.model.Note
 import com.example.notebookapp.databinding.FragmentAllNotesBinding
 import com.example.notebookapp.view.adapters.NoteAdapter
 import com.example.notebookapp.view.contract.contract
-import com.github.javafaker.Faker
 
 class AllNotesFragment : Fragment() {
 
@@ -42,8 +40,8 @@ class AllNotesFragment : Fragment() {
             val adapter = NoteAdapter(notes)
             this.adapter = adapter
             setOnItemClickListener { _, _, position, _ ->
-                val currentNote = notes[position]
-                contract().showCreatingNote(currentNote)
+                // val currentNote = notes[position]
+                contract().showEditingNote(position)
             }
         }
 
@@ -65,7 +63,11 @@ class AllNotesFragment : Fragment() {
     }
 
     private fun onAddPressed(){
-        contract().showCreatingNote(Note())
+        contract().showCreatingNote()
+    }
+
+    companion object{
+        private const val KEY_CREATING = -1
     }
 
 }
