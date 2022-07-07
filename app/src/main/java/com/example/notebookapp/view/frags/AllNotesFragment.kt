@@ -5,17 +5,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notebook.model.Note
 import com.example.notebookapp.databinding.FragmentAllNotesBinding
+import com.example.notebookapp.model.NotesListener
+import com.example.notebookapp.view.adapters.NoteActionListener
 import com.example.notebookapp.view.adapters.NoteAdapter
 import com.example.notebookapp.view.contract.contract
 
 class AllNotesFragment : Fragment() {
 
     lateinit var binding: FragmentAllNotesBinding
+    lateinit var noteAdapter: NoteAdapter
 
-    private lateinit var notes: ArrayList<Note>
+    private lateinit var notes: MutableList<Note>
+
+    private val usersListener: NotesListener = {
+        noteAdapter.notes = it
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,23 +33,36 @@ class AllNotesFragment : Fragment() {
 
         notes = contract().notesService.notes
 
-        with(binding.rvNotes){
-            val adapter = NoteAdapter(notes)
-            this.adapter = adapter
-            setOnItemClickListener { _, _, position, _ ->
-                // val currentNote = notes[position]
-                contract().showEditingNote(position)
+        noteAdapter = NoteAdapter(object : NoteActionListener{
+            override fun onNoteEdit(note: Note) {
+                contract().showCreatingNote()
             }
+
+            override fun onNoteDelete(note: Note) {
+                TODO("Not yet implemented")
+            }
+        })
+        noteAdapter.notes = notes
+
+        with (binding.rvNotes) {
+            val layoutManager = LinearLayoutManager(requireContext()) // vertical list
+            this.layoutManager = layoutManager
+            this.adapter = noteAdapter
+
+
+
+            // setOnItemClickListener { _, _, position, _ ->
+            //     // val currentNote = notes[position]
+            //     contract().showEditingNote(position)
+            // }
         }
 
         binding.fabAdd.setOnClickListener { onAddPressed() }
 
-        // binding.rvNotes.onItemClickListener = AdapterView.OnItemClickListener {
-        //         parent, view, position, id -> contract().showCreatingNote(notes[position])
-        // }
-
         return binding.root
     }
+
+    // fun val notesListener:
 
     fun onBackPressed(){
         contract().goBack()

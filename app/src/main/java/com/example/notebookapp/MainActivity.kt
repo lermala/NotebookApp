@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity(), AppContract {
 
     lateinit var binding: ActivityMainBinding
 
+    override val notesService: NotesService
+        get() = (applicationContext as App).notesService
+
     // вызывается тогда, когда для определенного фргамента создался интерфейс
     // и который готовится быть показанным сейчас
     // всегда занем какой фрагмент и когда обновить toolbar
@@ -72,9 +75,6 @@ class MainActivity : AppCompatActivity(), AppContract {
         onBackPressed()
         return true
     }
-
-    override val notesService: NotesService
-        get() = (applicationContext as App).notesService
 
     override fun goBack() {
         onBackPressed()
