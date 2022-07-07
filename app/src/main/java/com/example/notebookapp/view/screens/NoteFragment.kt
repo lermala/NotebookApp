@@ -1,4 +1,4 @@
-package com.example.notebookapp.view.frags
+package com.example.notebookapp.view.screens
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

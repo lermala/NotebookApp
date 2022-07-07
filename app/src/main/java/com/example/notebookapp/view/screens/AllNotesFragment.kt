@@ -1,4 +1,4 @@
-package com.example.notebookapp.view.frags
+package com.example.notebookapp.view.screens
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,10 +20,6 @@ class AllNotesFragment : Fragment() {
 
     private lateinit var notes: MutableList<Note>
 
-    private val usersListener: NotesListener = {
-        noteAdapter.notes = it
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,10 +28,9 @@ class AllNotesFragment : Fragment() {
         binding = FragmentAllNotesBinding.inflate(inflater, container, false)
 
         notes = contract().notesService.notes
-
         noteAdapter = NoteAdapter(object : NoteActionListener{
             override fun onNoteEdit(note: Note) {
-                contract().showCreatingNote()
+                contract().showEditingNote(note.id)
             }
 
             override fun onNoteDelete(note: Note) {

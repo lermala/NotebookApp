@@ -24,6 +24,36 @@ class NotesService {
         )} as ArrayList<Note>
     }
 
+    fun getNote(note: Note) {
+        val indexToDelete = notes.indexOfFirst { it.id == note.id }
+        if (indexToDelete != -1){
+            notes.removeAt(indexToDelete)
+            notifyChanges()
+        }
+    }
+
+    fun addNote(note: Note) {
+        note.id = notes.last().id + 1 // todo
+        notes.add(note)
+        notifyChanges()
+    }
+
+    fun deleteNote(note: Note) {
+        val indexToDelete = notes.indexOfFirst { it.id == note.id }
+        if (indexToDelete != -1){
+            notes.removeAt(indexToDelete)
+            notifyChanges()
+        }
+    }
+
+    fun editNote(note: Note) {
+        val indexToEdit = notes.indexOfFirst { it.id == note.id }
+        if (indexToEdit != -1){
+            notes[indexToEdit] = note
+            notifyChanges()
+        }
+    }
+
     fun addListener(listener: NotesListener) {
         listeners.add(listener)
         listener.invoke(notes)
@@ -36,5 +66,4 @@ class NotesService {
     private fun notifyChanges() {
         listeners.forEach { it.invoke(notes) }
     }
-
 }

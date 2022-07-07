@@ -17,8 +17,8 @@ import com.example.notebook.model.Note
 import com.example.notebookapp.databinding.ActivityMainBinding
 import com.example.notebookapp.model.NotesService
 import com.example.notebookapp.view.contract.*
-import com.example.notebookapp.view.frags.AllNotesFragment
-import com.example.notebookapp.view.frags.NoteFragment
+import com.example.notebookapp.view.screens.AllNotesFragment
+import com.example.notebookapp.view.screens.NoteFragment
 
 class MainActivity : AppCompatActivity(), AppContract {
 
