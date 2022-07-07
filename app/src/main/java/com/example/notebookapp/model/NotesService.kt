@@ -7,12 +7,13 @@ import kotlin.random.Random
 
 class NotesService {
 
-    private val pantones = PantoneService().pantones
+    private val pantones = PantoneService().pantones.shuffled()
 
-    val notes: ArrayList<Note> = (1..40).map { Note(
+    val notes: ArrayList<Note> = (1..20).map { Note(
         title = Faker.instance().lorem().sentence(),
-        content = Faker.instance().lorem().paragraph(10),
-        style = NoteStylePantone(pantoneColor = pantones[Random.nextInt(pantones.size)])
+        content = Faker.instance().lorem().paragraphs(Random.nextInt(1, 11)).joinToString("\n\n"),
+        style = NoteStylePantone(pantoneColor = pantones[it % pantones.size])
     )} as ArrayList<Note>
 
 }
+
