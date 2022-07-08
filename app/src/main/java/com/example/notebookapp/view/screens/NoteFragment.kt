@@ -1,4 +1,4 @@
-package com.example.notebookapp.view.frags
+package com.example.notebookapp.view.screens
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -84,7 +84,7 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
         note.title = binding.noteTitle.text.toString()
         note.content = binding.noteContent.text.toString()
 
-        contract().publishResult(note)
+        contract().addNote(note)
         contract().goBack()
     }
 

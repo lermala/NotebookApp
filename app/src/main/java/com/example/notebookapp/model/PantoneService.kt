@@ -2,7 +2,7 @@ package com.example.notebookapp.model
 
 class PantoneService {
 
-    val pantones = listOf<PantoneColor>(
+    val pantones = mutableListOf<PantoneColor>(
         PantoneColor("Burnished Lilac", "15-1905", "#c6aaaf"),
         PantoneColor("Lotus", "14-1905", "#e2c0bf"),
         PantoneColor("Muted Clay", "16-1330", "#d3927e"),

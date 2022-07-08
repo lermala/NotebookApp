@@ -13,15 +13,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.LifecycleOwner
+import com.example.notebook.model.Note
 import com.example.notebookapp.databinding.ActivityMainBinding
 import com.example.notebookapp.model.NotesService
 import com.example.notebookapp.view.contract.*
-import com.example.notebookapp.view.frags.AllNotesFragment
-import com.example.notebookapp.view.frags.NoteFragment
+import com.example.notebookapp.view.screens.AllNotesFragment
+import com.example.notebookapp.view.screens.NoteFragment
 
 class MainActivity : AppCompatActivity(), AppContract {
 
     lateinit var binding: ActivityMainBinding
+
+    override val notesService: NotesService
+        get() = (applicationContext as App).notesService
 
     // вызывается тогда, когда для определенного фргамента создался интерфейс
     // и который готовится быть показанным сейчас
@@ -72,9 +76,6 @@ class MainActivity : AppCompatActivity(), AppContract {
         return true
     }
 
-    override val notesService: NotesService
-        get() = (applicationContext as App).notesService
-
     override fun goBack() {
         onBackPressed()
     }
@@ -85,30 +86,20 @@ class MainActivity : AppCompatActivity(), AppContract {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
-    override fun <T : Parcelable> publishResult(result: T) {
-        supportFragmentManager.setFragmentResult(result.javaClass.name, bundleOf(KEY_RESULT to result))
-    }
-
-    override fun <T : Parcelable> listenResult(
-        clazz: Class<T>,
-        owner: LifecycleOwner,
-        listener: ResultListener<T>
-    ) {
-        supportFragmentManager.setFragmentResultListener(
-            clazz.name,
-            owner,
-            FragmentResultListener { key, bundle ->
-                listener.invoke(bundle.getParcelable(KEY_RESULT)!!)
-            }
-        )
-    }
+    // override fun addNote(note: Note) {
+    //     notesService.notes.add(note)
+    // }
+//
+    // override fun editNote(note: Note) {
+    //     notesService.notes.set(note.id, note) // todo change
+    // }
 
     override fun showAllNotes() {
         launchFragment(AllNotesFragment())
     }
 
     override fun showEditingNote(noteId: Int) {
-        launchFragment(NoteFragment.newInstance(noteId))
+        launchFragment(NoteFragment.newInstance(noteId)) // todo
     }
 
     override fun showCreatingNote() {
@@ -163,6 +154,23 @@ class MainActivity : AppCompatActivity(), AppContract {
             .addToBackStack(null)
             .replace(R.id.fragment_container, fragment)
             .commit()
+    }
+
+    override fun <T : Parcelable> publishResult(result: T) {
+        supportFragmentManager.setFragmentResult(result.javaClass.name, bundleOf(KEY_RESULT to result))
+    }
+    override fun <T : Parcelable> listenResult(
+        clazz: Class<T>,
+        owner: LifecycleOwner,
+        listener: ResultListener<T>
+    ) {
+        supportFragmentManager.setFragmentResultListener(
+            clazz.name,
+            owner,
+            FragmentResultListener { key, bundle ->
+                listener.invoke(bundle.getParcelable(KEY_RESULT)!!)
+            }
+        )
     }
 
     companion object{

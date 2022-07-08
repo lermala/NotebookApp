@@ -26,6 +26,10 @@ interface AppContract {
 
     fun goToStartFragment()
 
+    // data
+    // fun addNote(note: Note)
+    // fun editNote(note: Note)
+
     // для передачи информации между фрагментами
     fun <T: Parcelable>publishResult(result: T)
     fun <T: Parcelable>listenResult(clazz: Class<T>, owner: LifecycleOwner, listener: ResultListener<T>)

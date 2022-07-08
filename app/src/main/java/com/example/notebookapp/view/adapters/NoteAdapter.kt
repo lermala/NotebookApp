@@ -1,86 +1,112 @@
 package com.example.notebookapp.view.adapters
 
-import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.example.notebook.model.Note
+import com.example.notebookapp.R
 import com.example.notebookapp.databinding.ItemNotePantoneBinding
-import com.example.notebookapp.model.PantoneColor
 import com.example.notebookapp.model.note_style.NoteStylePantone
 import com.example.notebookapp.model.note_style.NoteStyleSimple
 
 typealias OnClickItemListener = (Note) -> Unit
 
-class NoteAdapter(private val notes: MutableList<Note>): BaseAdapter(), View.OnClickListener {
+interface NoteActionListener {
+    fun onNoteEdit(note: Note)
+    fun onNoteDelete(note: Note)
+    // todo
+}
 
-    override fun getCount(): Int {
-        return notes.size
-    }
+class NoteAdapter(
+    private val actionListener: NoteActionListener
+): RecyclerView.Adapter<NoteAdapter.NoteViewHolder>(), View.OnClickListener {
 
-    override fun getItem(p0: Int): Any {
-        return notes[p0]
-    }
-
-    override fun getItemId(p0: Int): Long {
-        return p0.toLong()
-    }
-
-    override fun getView(pos: Int, convertView: View?, parent: ViewGroup?): View {
-        val currentNote = notes[pos]
-
-        var view: View = getPantoneView(pos, convertView, parent) // change by default
-        when(currentNote.style){
-            is NoteStylePantone -> view = getPantoneView(pos, convertView, parent)
-            is NoteStyleSimple ->  view = getSimpleView(pos, convertView, parent)
+    var notes: List<Note> = emptyList()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
 
-        return view
+    override fun getItemCount(): Int = notes.size
+
+    // вызывается тогда, когда RecyclerView хочет создать новый элемент списка
+    // viewType вызывается когда будет более 1-го типа элемента в списке
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemNotePantoneBinding.inflate(inflater, parent, false) //todo
+
+        with (binding) {
+            root.setOnClickListener(this@NoteAdapter)
+            deleteNoteImageView.setOnClickListener(this@NoteAdapter)
+        }
+
+        return NoteViewHolder(binding)
     }
 
-    private fun getPantoneView(pos: Int, convertView: View?, parent: ViewGroup?): View  {
-        val binding : ItemNotePantoneBinding =
-            convertView?.tag as ItemNotePantoneBinding? ?: // if doesn't exist
-            createPantoneBinding(parent!!.context) // else create new
+    // обновление элемента списка
+    override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+        val currentNote = notes[position]
+
+        // обновляем вид в соответствии со стилем заметки
+        when(currentNote.style){
+            is NoteStylePantone -> getPantoneView(holder, position)
+            is NoteStyleSimple -> getSimpleView(holder, position) // todo
+        }
+
+    }
+
+    private fun getPantoneView(holder: NoteViewHolder, position: Int)  {
+        // val binding : ItemNotePantoneBinding =
+        //     convertView?.tag as ItemNotePantoneBinding? ?: // if doesn't exist
+        //     createPantoneBinding(parent!!.context) // else create new
+        val holderPantone = holder.binding as ItemNotePantoneBinding
+
+        val currentNote = notes[position]
+        val pantone = (currentNote.style as NoteStylePantone).pantoneColor // // change color
 
         // updates UI
-        binding.noteNameTextView.text = notes[pos].title
-        // change color
-        val pantone = (notes[pos].style as NoteStylePantone).pantoneColor
+        with (holderPantone) {
+            holder.itemView.tag = currentNote
+            noteNameTextView.tag = currentNote
+            codeColorTextView.tag = currentNote
+            codeNameTextView.tag = currentNote
+            deleteNoteImageView.tag = currentNote
+            imageView.tag = currentNote
 
-        binding.imageView.setBackgroundColor(pantone.parseColor())
-        binding.codeColorTextView.text = pantone.codePantoneColor
-        binding.codeNameTextView.text = pantone.nameColor
-
-        return binding.root
+            noteNameTextView.text = notes[position].title
+            imageView.setBackgroundColor(pantone.parseColor())
+            codeColorTextView.text = pantone.codePantoneColor
+            codeNameTextView.text = pantone.nameColor
+        }
     }
 
-    private fun getSimpleView(pos: Int, convertView: View?, parent: ViewGroup?): View  {
-        val binding : ItemNotePantoneBinding =
-            convertView?.tag as ItemNotePantoneBinding? ?: // if doesn't exist
-            createPantoneBinding(parent!!.context) // else create new
+    private fun getSimpleView(holder: NoteViewHolder, position: Int) {
+        // val binding : ItemNotePantoneBinding =
+        //     convertView?.tag as ItemNotePantoneBinding? ?: // if doesn't exist
+        //     createPantoneBinding(parent!!.context) // else create new
 
         // updates UI
         // todo
-
-        return binding.root
-    }
-
-    private fun createPantoneBinding(context: Context) : ItemNotePantoneBinding {
-        val binding = ItemNotePantoneBinding.inflate(LayoutInflater.from(context))
-        // binding.btDel.setOnClickListener(this)
-
-        binding.root.tag = binding
-        return binding
     }
 
     // использовать, если в каждом view будет кнопка, которую нужно обработать.
     // Сейчас она не нужна.
-    override fun onClick(v: View?) {
-        // val note = v.tag as Note
-        // OnClickItemListener.invoke()
+    override fun onClick(v: View) {
+        val note = v.tag as Note
+        when (v.id) {
+            R.id.deleteNoteImageView -> {
+                actionListener.onNoteDelete(note)
+            }
+            else -> { // клик на элемент списка
+                actionListener.onNoteEdit(note)
+            }
+        }
     }
 
-
+    class NoteViewHolder(
+        val binding: ViewBinding
+    ) : RecyclerView.ViewHolder(binding.root)
 }
