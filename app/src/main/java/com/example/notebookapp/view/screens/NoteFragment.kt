@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.notebook.model.Note
 import com.example.notebookapp.R
 import com.example.notebookapp.databinding.FragmentNoteBinding
@@ -13,21 +15,18 @@ import com.example.notebookapp.view.contract.CustomAction
 import com.example.notebookapp.view.contract.HasCustomAction
 import com.example.notebookapp.view.contract.HasCustomTitle
 import com.example.notebookapp.view.contract.contract
+import com.example.notebookapp.view.factory
 
 class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
 
     private lateinit var binding: FragmentNoteBinding
+    private val viewModel: NoteViewModel by viewModels { factory() }
     // lateinit var note: Note // version 1
     // val note: Note // version 2
     //     get() = arguments?.getParcelable<Note>(KEY_NOTE) as Note
 
     private var note = Note()
     private var idNote: Int = KEY_CREATING
-    // lateinit var idNote: Int
-    // val idNote: Int
-    //     get() = requireArguments().getInt(KEY_NOTE_ID).also {
-    //         note = contract().notesService.notes[it]
-    //     } ?: KEY_CREATING
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +40,8 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
             KEY_CREATING // -1 means creating new Note
 
         if (idNote != KEY_CREATING) {
-            note = contract().notesService.notes[idNote]
+            // note = contract().notesService.notes[idNote] // todo
+            viewModel.loadNote(requireArguments().getInt(KEY_NOTE_ID))
         }
     }
 
@@ -50,21 +50,20 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentNoteBinding.inflate(inflater, container, false)
-        binding.noteTitle.setText(note.title)
-        binding.noteContent.setText(note.content)
+
+        viewModel.note.observe(viewLifecycleOwner, Observer {
+            note = it
+            binding.noteTitle.setText(it.title)
+            binding.noteContent.setText(it.content)
+        })
+
         return binding.root
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(KEY_NOTE_ID, idNote)
-    }
-
-    override fun getTitleRes(): Int {
-        return if (note.title.isBlank()){
-            R.string.newNote
-        } else R.string.note
-    }
+   //  override fun onSaveInstanceState(outState: Bundle) {
+   //      super.onSaveInstanceState(outState)
+   //      outState.putInt(KEY_NOTE_ID, idNote)
+   //  }
 
     // кастомизация верхнего меню
     override fun getCustomAction(): CustomAction {
@@ -73,6 +72,12 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
             textRes = R.string.save,
             onCustomAction = { onSavePressed() }
         )
+    }
+
+    override fun getTitleRes(): Int {
+        return if (note.title.isBlank()){
+            R.string.newNote
+        } else R.string.note
     }
 
     private fun onSavePressed(){
@@ -84,7 +89,13 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
         note.title = binding.noteTitle.text.toString()
         note.content = binding.noteContent.text.toString()
 
-        contract().addNote(note)
+
+        if (note.id == KEY_CREATING) {
+            viewModel.addNote(note)
+        } else {
+            viewModel.editNote(note)
+        }
+
         contract().goBack()
     }
 

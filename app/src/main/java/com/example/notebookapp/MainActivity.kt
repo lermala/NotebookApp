@@ -86,13 +86,13 @@ class MainActivity : AppCompatActivity(), AppContract {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
-    override fun addNote(note: Note) {
-        notesService.notes.add(note)
-    }
-
-    override fun editNote(id: Int, note: Note) {
-        notesService.notes.set(id, note) // todo change
-    }
+    // override fun addNote(note: Note) {
+    //     notesService.notes.add(note)
+    // }
+//
+    // override fun editNote(note: Note) {
+    //     notesService.notes.set(note.id, note) // todo change
+    // }
 
     override fun showAllNotes() {
         launchFragment(AllNotesFragment())

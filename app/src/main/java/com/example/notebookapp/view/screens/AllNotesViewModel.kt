@@ -30,12 +30,12 @@ class AllNotesViewModel(
         notesService.addNote(note)
     }
 
-    fun deleteNote(note: Note) {
-        notesService.deleteNote(note)
-    }
-
     fun editNote(note: Note) {
         notesService.editNote(note)
+    }
+
+    fun deleteNote(note: Note) {
+        notesService.deleteNote(note)
     }
 
     override fun onCleared() {
