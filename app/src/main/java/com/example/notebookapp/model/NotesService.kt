@@ -32,7 +32,7 @@ class NotesService {
     }
 
     fun addNote(note: Note) {
-        note.id = notes.last().id + 1 // todo
+        note.id = (notes.lastIndex + 1) ?: 1 // todo
         notes.add(note)
         notifyChanges()
     }
