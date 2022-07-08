@@ -20,9 +20,15 @@ interface AppContract {
 
     fun showAllNotes()
 
-    fun showCreatingNote(note: Note)
+    fun showEditingNote(noteId: Int)
+
+    fun showCreatingNote()
 
     fun goToStartFragment()
+
+    // data
+    // fun addNote(note: Note)
+    // fun editNote(note: Note)
 
     // для передачи информации между фрагментами
     fun <T: Parcelable>publishResult(result: T)

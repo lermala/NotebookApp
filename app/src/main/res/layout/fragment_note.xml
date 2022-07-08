@@ -11,7 +11,7 @@
         android:id="@+id/note_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/title"
+        tools:text="@string/title"
         android:textSize="20sp"
         android:textStyle="bold"
         android:hint="@string/title"

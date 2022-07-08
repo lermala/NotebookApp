@@ -1,4 +1,4 @@
-package com.example.notebookapp.view.frags
+package com.example.notebookapp.view.screens
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -16,13 +16,18 @@ import com.example.notebookapp.view.contract.contract
 
 class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
 
-    lateinit var binding: FragmentNoteBinding
+    private lateinit var binding: FragmentNoteBinding
     // lateinit var note: Note // version 1
-    val note: Note // version 2
-        get() = arguments?.getParcelable<Note>(KEY_NOTE) as Note
+    // val note: Note // version 2
+    //     get() = arguments?.getParcelable<Note>(KEY_NOTE) as Note
 
-
-    var isForEdit = true
+    private var note = Note()
+    private var idNote: Int = KEY_CREATING
+    // lateinit var idNote: Int
+    // val idNote: Int
+    //     get() = requireArguments().getInt(KEY_NOTE_ID).also {
+    //         note = contract().notesService.notes[it]
+    //     } ?: KEY_CREATING
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +35,14 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
         // note = savedInstanceState?.getParcelable<Note>(KEY_NOTE) ?:
         //         arguments?.getParcelable<Note>(KEY_NOTE) ?:
         //         throw IllegalArgumentException("You need to specify note to launch this fragment")
+
+        idNote = savedInstanceState?.getInt(KEY_NOTE_ID) ?:
+            arguments?.getInt(KEY_NOTE_ID) ?:
+            KEY_CREATING // -1 means creating new Note
+
+        if (idNote != KEY_CREATING) {
+            note = contract().notesService.notes[idNote]
+        }
     }
 
     override fun onCreateView(
@@ -44,7 +57,7 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(KEY_NOTE, note)
+        outState.putInt(KEY_NOTE_ID, idNote)
     }
 
     override fun getTitleRes(): Int {
@@ -62,7 +75,7 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
         )
     }
 
-    fun onSavePressed(){
+    private fun onSavePressed(){
         if (checkInput().isEmpty()){
             // todo
         } else {
@@ -71,7 +84,7 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
         note.title = binding.noteTitle.text.toString()
         note.content = binding.noteContent.text.toString()
 
-        contract().publishResult(note)
+        contract().addNote(note)
         contract().goBack()
     }
 
@@ -86,14 +99,12 @@ class NoteFragment : Fragment(), HasCustomTitle, HasCustomAction {
     }
 
     companion object{
-        private const val KEY_NOTE = "KEY_NOTE"
+        private const val KEY_NOTE_ID = "KEY_NOTE_ID"
+        private const val KEY_CREATING = -1
 
-        // лучше передавать не Note, а только его id
-        public fun newInstance(note: Note): NoteFragment{
-            // val args = Bundle()
-            // args.putParcelable(KEY_NOTE, note)
+        public fun newInstance(noteId: Int): NoteFragment{
             val fragment = NoteFragment()
-            fragment.arguments = bundleOf(KEY_NOTE to note)
+            fragment.arguments = bundleOf(KEY_NOTE_ID to noteId)
             return fragment
         }
     }
