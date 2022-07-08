@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity(), AppContract {
     }
 
     override fun showEditingNote(noteId: Int) {
-        launchFragment(NoteFragment.newInstance(noteId))
+        launchFragment(NoteFragment.newInstance(noteId)) // todo
     }
 
     override fun showCreatingNote() {

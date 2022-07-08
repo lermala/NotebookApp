@@ -97,7 +97,7 @@ class NoteAdapter(
         val note = v.tag as Note
         when (v.id) {
             R.id.deleteImageView -> {
-                // todo
+                actionListener.onNoteDelete(note)
             }
             else -> { // клик на элемент списка
                 actionListener.onNoteEdit(note)
