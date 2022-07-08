@@ -2,6 +2,7 @@ package com.example.notebookapp.model
 
 import com.example.notebook.model.Note
 import com.example.notebookapp.model.note_style.NoteStylePantone
+import com.example.notebookapp.view.exceptions.NoteNotFoundException
 import com.github.javafaker.Faker
 import kotlin.random.Random
 
@@ -18,18 +19,16 @@ class NotesService {
         pantones.shuffled()
 
         notes = (1..20).map { Note(
+            id = it,
             title = Faker.instance().lorem().sentence(),
             content = Faker.instance().lorem().paragraphs(Random.nextInt(1, 11)).joinToString("\n\n"),
             style = NoteStylePantone(pantoneColor = pantones[it % pantones.size])
         )} as ArrayList<Note>
     }
 
-    fun getNote(note: Note) {
-        val indexToDelete = notes.indexOfFirst { it.id == note.id }
-        if (indexToDelete != -1){
-            notes.removeAt(indexToDelete)
-            notifyChanges()
-        }
+    fun getNoteById(noteId: Int): Note {
+        val note = notes.firstOrNull { it.id == noteId } ?: throw NoteNotFoundException()
+        return note
     }
 
     fun addNote(note: Note) {

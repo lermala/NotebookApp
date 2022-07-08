@@ -27,8 +27,8 @@ interface AppContract {
     fun goToStartFragment()
 
     // data
-    fun addNote(note: Note)
-    fun editNote(id: Int, note: Note)
+    // fun addNote(note: Note)
+    // fun editNote(note: Note)
 
     // для передачи информации между фрагментами
     fun <T: Parcelable>publishResult(result: T)

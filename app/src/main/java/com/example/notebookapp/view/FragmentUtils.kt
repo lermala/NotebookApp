@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.notebookapp.App
 import com.example.notebookapp.view.screens.AllNotesViewModel
+import com.example.notebookapp.view.screens.NoteFragment
+import com.example.notebookapp.view.screens.NoteViewModel
 
 class ViewModelFactory(
     private val app: App
@@ -15,7 +17,9 @@ class ViewModelFactory(
             AllNotesViewModel::class.java -> {
                 AllNotesViewModel(app.notesService)
             }
-
+            NoteViewModel::class.java -> {
+                NoteViewModel(app.notesService)
+            }
             else -> {
                 throw IllegalStateException("Unknown view model class")
             }

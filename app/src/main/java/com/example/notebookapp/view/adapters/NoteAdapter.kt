@@ -1,6 +1,6 @@
 package com.example.notebookapp.view.adapters
 
-import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +40,7 @@ class NoteAdapter(
 
         with (binding) {
             root.setOnClickListener(this@NoteAdapter)
-            // todo
+            deleteNoteImageView.setOnClickListener(this@NoteAdapter)
         }
 
         return NoteViewHolder(binding)
@@ -73,6 +73,7 @@ class NoteAdapter(
             noteNameTextView.tag = currentNote
             codeColorTextView.tag = currentNote
             codeNameTextView.tag = currentNote
+            deleteNoteImageView.tag = currentNote
             imageView.tag = currentNote
 
             noteNameTextView.text = notes[position].title
@@ -96,7 +97,7 @@ class NoteAdapter(
     override fun onClick(v: View) {
         val note = v.tag as Note
         when (v.id) {
-            R.id.deleteImageView -> {
+            R.id.deleteNoteImageView -> {
                 actionListener.onNoteDelete(note)
             }
             else -> { // клик на элемент списка

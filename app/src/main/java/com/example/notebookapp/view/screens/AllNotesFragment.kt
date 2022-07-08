@@ -40,7 +40,8 @@ class AllNotesFragment : Fragment() {
             }
 
             override fun onNoteDelete(note: Note) {
-                TODO("Not yet implemented")
+                // todo show alert
+                viewModel.deleteNote(note)
             }
         })
 

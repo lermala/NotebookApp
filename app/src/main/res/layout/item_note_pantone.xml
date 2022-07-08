@@ -71,16 +71,17 @@
             android:paddingBottom="8dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/deleteImageView"
+            app:layout_constraintEnd_toStartOf="@id/deleteNoteImageView"
             app:layout_constraintBottom_toBottomOf="parent"
             />
 
-        <ImageView
-            android:id="@+id/deleteImageView"
+        <ImageButton
+            android:id="@+id/deleteNoteImageView"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:src="@drawable/ic_delete"
-            android:paddingBottom="8dp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:layout_constraintTop_toTopOf="@id/codeNameTextView"
             app:layout_constraintBottom_toBottomOf="@id/codeNameTextView"
             app:layout_constraintEnd_toEndOf="parent" />
